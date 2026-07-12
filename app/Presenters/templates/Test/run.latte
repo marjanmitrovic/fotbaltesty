@@ -1,0 +1,65 @@
+{block title}Probíhající test{/block}
+{block content}
+<section class="test-header">
+    <div>
+        <span class="eyebrow">Probíhající test</span>
+        <h1>Vyberte správnou odpověď</h1>
+    </div>
+    <div class="test-timer" data-minutes="{$test->timeLimit}">
+        <span>Zbývající čas</span>
+        <strong id="countdown">{$test->timeLimit}:00</strong>
+    </div>
+</section>
+
+{form answerForm, class => 'test-form', id => 'answer-form'}
+    <div n:if="$form->hasErrors()" class="form-errors">
+        <p n:foreach="$form->errors as $error">{$error}</p>
+    </div>
+
+    {foreach $questions as $questionId => $data}
+        <article class="question-card">
+         <div class="question-number">Otázka {$iterator->counter} z {count($questions)}</div>
+            <h2>{$data['question']->text}</h2>
+            <div class="answer-list">
+                {foreach $data['answers'] as $answerId => $answerText}
+                    <label class="answer-option">
+                        <input n:name="question_{$questionId}:$answerId">
+                        <span>{$answerText}</span>
+                    </label>
+                {/foreach}
+            </div>
+        </article>
+    {/foreach}
+
+    <div class="test-submit-bar">
+        <a class="text-link" n:href="Dashboard:default">Zrušit test</a>
+        <button n:name="finish" class="button">Dokončit test</button>
+    </div>
+{/form}
+
+<script>
+(() => {
+    const timer = document.querySelector('.test-timer');
+    const output = document.getElementById('countdown');
+    const form = document.getElementById('answer-form');
+    if (!timer || !output || !form) return;
+
+    let remaining = Number(timer.dataset.minutes) * 60;
+    const render = () => {
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+        output.textContent = minutes + ':' + String(seconds).padStart(2, '0');
+    };
+
+    render();
+    const interval = setInterval(() => {
+        remaining -= 1;
+        render();
+        if (remaining <= 0) {
+            clearInterval(interval);
+            form.submit();
+        }
+    }, 1000);
+})();
+</script>
+{/block}

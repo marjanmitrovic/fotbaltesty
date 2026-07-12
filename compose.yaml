@@ -1,0 +1,49 @@
+services:
+  db:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    image: localhost/fotbaltesty-db:modern-v4
+    environment:
+      MARIADB_DATABASE: fotbaltesty
+      MARIADB_USER: fotbaltesty
+      MARIADB_PASSWORD: change_me_local
+      MARIADB_ROOT_PASSWORD: change_root_local
+    command:
+      - --sql-mode=
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - fotbaltesty
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: localhost/fotbaltesty-web:modern-v4
+    environment:
+      APP_ENV: development
+      APP_DEBUG: "1"
+      DB_DSN: mysql:host=db;port=3306;dbname=fotbaltesty;charset=utf8mb4
+      DB_USER: fotbaltesty
+      DB_PASSWORD: change_me_local
+      DB_WAIT_ATTEMPTS: "900"
+      DEMO_EMAIL: demo@fotbaltesty.local
+      DEMO_PASSWORD: demo1234
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    networks:
+      - fotbaltesty
+    restart: unless-stopped
+
+volumes:
+  db_data:
+
+networks:
+  fotbaltesty:
+    driver: bridge

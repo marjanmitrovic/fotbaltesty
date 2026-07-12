@@ -1,0 +1,19 @@
+application:
+    errorPresenter: Error
+    mapping:
+        *: App\Presenters\*Presenter
+
+session:
+    expiration: 14 days
+    cookieSamesite: Lax
+
+database:
+    dsn: %databaseDsn%
+    user: %databaseUser%
+    password: %databasePassword%
+
+services:
+    router: App\Router\RouterFactory::createRouter
+    - App\Model\UserAuthenticator
+    - App\Model\QuestionRepository
+    - App\Model\TestRepository

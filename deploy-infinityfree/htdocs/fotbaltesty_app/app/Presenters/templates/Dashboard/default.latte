@@ -1,0 +1,24 @@
+{block title}Můj přehled{/block}
+{block content}
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">Osobní zóna</span>
+        <h1>Dobrý den{if $currentUser->identity?->firstName}, {$currentUser->identity->firstName}{/if}</h1>
+    </div>
+    <div class="metric"><strong>{$questionCount|number}</strong><span>aktivních otázek</span></div>
+</section>
+<section class="grid two">
+    <article class="card action-card"><h2>Nový test</h2><p>Vyberte počet otázek, nastavte časový limit a spusťte náhodně generovaný test.</p><a class="button" n:href="Test:default">Spustit test</a></article>
+    <article class="card"><h2>Poslední výsledky</h2>
+        {if $recentTests->getRowCount()}
+            <div class="table-wrap"><table><thead><tr><th>Datum</th><th>Kategorie</th><th>Výsledek</th></tr></thead><tbody>
+            {foreach $recentTests as $test}
+                <tr><td>{$test->endDate|date:'j. n. Y H:i'}</td><td>{$test->categoryName}</td><td><strong>{$test->correct}/{$test->total}</strong></td></tr>
+            {/foreach}
+            </tbody></table></div>
+        {else}
+            <p>Zatím zde nejsou dokončené testy.</p>
+        {/if}
+    </article>
+</section>
+{/block}

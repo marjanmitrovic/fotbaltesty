@@ -1,0 +1,44 @@
+{block title}Úvod{/block}
+{block content}
+<section class="simple-hero">
+    <div class="hero-panel">
+        <div class="hero-top">
+            <div class="logo-ball"><img src="{$basePath}/img/football-logo.png" alt="Fotbalový míč"></div>
+            <div>
+                <div class="eyebrow">Fotbalové testy</div>
+                <h1>Jednoduchá příprava pro rozhodčí</h1>
+            </div>
+        </div>
+
+        <p>Databáze obsahuje <strong>{$questionCount|number}</strong> aktivních otázek. Procvičujte testy a sledujte své výsledky na jednom místě.</p>
+
+        <div class="info-strip">
+            <span>Aktivní otázky</span>
+            <strong>{$questionCount|number}</strong>
+        </div>
+
+        <div class="actions">
+            {if $currentUser->isLoggedIn()}
+                <a class="button" n:href="Dashboard:default">Otevřít přehled</a>
+            {else}
+                <a class="button" n:href="Sign:in">Přihlásit se</a>
+            {/if}
+        </div>
+    </div>
+</section>
+
+<section class="grid three">
+    <article class="card">
+        <h3>Přehledné rozhraní</h3>
+        <p>Jednoduché prostředí bez zbytečných prvků a velkých bloků.</p>
+    </article>
+    <article class="card">
+        <h3>Výsledky na jednom místě</h3>
+        <p>Rychlý přístup k výsledkům a dalším částem systému.</p>
+    </article>
+    <article class="card">
+        <h3>Funguje i na mobilu</h3>
+        <p>Rozhraní je přizpůsobené telefonu, tabletu i počítači.</p>
+    </article>
+</section>
+{/block}

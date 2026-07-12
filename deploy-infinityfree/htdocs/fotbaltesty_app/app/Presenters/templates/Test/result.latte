@@ -1,0 +1,28 @@
+{block title}Výsledek testu{/block}
+{block content}
+<section class="result-summary">
+    <div class="score-circle"><strong>{$percentage}%</strong></div>
+    <div>
+        <span class="eyebrow">Dokončený test</span>
+        <h1>Výsledek: {$summary->correct}/{$summary->total}</h1>
+        <p>{if $percentage >= 80}Výborný výsledek.{elseif $percentage >= 60}Dobrý základ, pokračujte v procvičování.{else}Doporučujeme projít chybné odpovědi a test zopakovat.{/if}</p>
+    </div>
+    <div class="actions">
+        <a class="button" n:href="Test:default">Spustit další test</a>
+        <a class="secondary-button" n:href="Dashboard:default">Můj přehled</a>
+    </div>
+</section>
+
+<section class="result-list">
+    {foreach $details as $detail}
+        <article class="result-item {$detail->correct ? 'is-correct' : 'is-wrong'}">
+            <div class="result-status">{$detail->correct ? 'Správně' : 'Chybně'}</div>
+            <h2>{$detail->questionText}</h2>
+            <p><strong>Vaše odpověď:</strong> {$detail->selectedText}</p>
+            {if !$detail->correct}
+                <p><strong>Správná odpověď:</strong> {$detail->correctText}</p>
+            {/if}
+        </article>
+    {/foreach}
+</section>
+{/block}
