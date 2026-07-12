@@ -3,9 +3,13 @@ application:
     mapping:
         *: App\Presenters\*Presenter
 
-session:
-    expiration: 14 days
-    cookieSamesite: Lax
+security:
+    authentication:
+        storage: cookie
+        expiration: 14 days
+        persistIdentity: true
+        cookieName: fotbaltesty_auth
+        cookieSamesite: Lax
 
 database:
     dsn: %databaseDsn%
