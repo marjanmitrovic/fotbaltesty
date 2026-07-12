@@ -9,11 +9,17 @@ while [ "$attempt" -le "$max_attempts" ]; do
         $dsn = getenv("DB_DSN");
         $user = getenv("DB_USER");
         $password = getenv("DB_PASSWORD");
+        $options = [
+            PDO::ATTR_TIMEOUT => 3,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ];
+        $sslCa = getenv("DB_SSL_CA");
+        if ($sslCa) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+        }
         try {
-            $pdo = new PDO($dsn, $user, $password, [
-                PDO::ATTR_TIMEOUT => 3,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            ]);
+            $pdo = new PDO($dsn, $user, $password, $options);
             $pdo->query("SELECT 1 FROM users LIMIT 1");
             exit(0);
         } catch (Throwable $e) {
@@ -41,10 +47,14 @@ php -r '
     $password = getenv("DB_PASSWORD");
     $email = getenv("DEMO_EMAIL") ?: "demo@fotbaltesty.local";
     $plain = getenv("DEMO_PASSWORD") ?: "demo1234";
+    $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+    $sslCa = getenv("DB_SSL_CA");
+    if ($sslCa) {
+        $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+    }
 
-    $pdo = new PDO($dsn, $user, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ]);
+    $pdo = new PDO($dsn, $user, $password, $options);
     $hash = password_hash($plain, PASSWORD_DEFAULT);
 
     $sql = "INSERT INTO users
