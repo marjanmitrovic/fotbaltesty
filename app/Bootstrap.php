@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use Nette\Bootstrap\Configurator;
+use PDO;
 use RuntimeException;
 
 final class Bootstrap
@@ -22,10 +23,18 @@ final class Bootstrap
             ->addDirectory(__DIR__)
             ->register();
 
+        $databaseOptions = [];
+        $sslCa = self::env('DB_SSL_CA');
+        if ($sslCa !== null) {
+            $databaseOptions[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+            $databaseOptions[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+        }
+
         $configurator->addDynamicParameters([
             'databaseDsn' => self::requiredEnv('DB_DSN'),
             'databaseUser' => self::requiredEnv('DB_USER'),
             'databasePassword' => self::requiredEnv('DB_PASSWORD'),
+            'databaseOptions' => $databaseOptions,
         ]);
         $configurator->addConfig($root . '/config/common.neon');
 
