@@ -11,6 +11,7 @@ database:
     dsn: %databaseDsn%
     user: %databaseUser%
     password: %databasePassword%
+    options: %databaseOptions%
 
 services:
     router: App\Router\RouterFactory::createRouter
