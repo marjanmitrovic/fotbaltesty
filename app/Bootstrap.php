@@ -15,10 +15,22 @@ final class Bootstrap
         $root = dirname(__DIR__);
         self::loadEnv($root . '/.env');
 
+        $runtimeBase = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'fotbaltesty_' . substr(sha1($root), 0, 12);
+        $tempDir = $runtimeBase . DIRECTORY_SEPARATOR . 'temp';
+        $logDir = $runtimeBase . DIRECTORY_SEPARATOR . 'log';
+
+        foreach ([$tempDir, $logDir] as $directory) {
+            if (!is_dir($directory) && !@mkdir($directory, 0777, true) && !is_dir($directory)) {
+                throw new RuntimeException('Cannot create runtime directory: ' . $directory);
+            }
+        }
+
         $configurator = new Configurator();
         $configurator->setDebugMode(filter_var(self::env('APP_DEBUG', '0'), FILTER_VALIDATE_BOOL));
-        $configurator->enableTracy($root . '/log');
-        $configurator->setTempDirectory($root . '/temp');
+        $configurator->enableTracy($logDir);
+        $configurator->setTempDirectory($tempDir);
         $configurator->createRobotLoader()
             ->addDirectory(__DIR__)
             ->register();
